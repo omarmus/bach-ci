@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <log>
+    <type>file</type>
+    <name>c:\log_propel.log</name>
+    <ident>propel-tdv</ident>
+    <level>7</level>
+  </log>
+  <propel>
+    <datasources default="bach">
+      <datasource id="bach">
+        <adapter>mysql</adapter> <!-- sqlite, mysql, myssql, oracle, or pgsql -->
+        <connection>
+          <dsn>mysql:host=localhost;dbname=bach</dsn>
+          <user>root</user>
+          <password></password>
+          <options>
+			<option id="ATTR_PERSISTENT">false</option>
+		  </options>
+		  <attributes>
+			<option id="ATTR_EMULATE_PREPARES">true</option>
+		  </attributes>
+		  <settings>
+            <setting id="charset">utf8</setting>
+          </settings>
+        </connection>
+      </datasource>
+    </datasources>
+  </propel>
+</config>
