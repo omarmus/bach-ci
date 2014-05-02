@@ -2,7 +2,7 @@
 
 class BC_Config extends CI_Config {
 
-	// function site_url($uri = '')
+	// function base_url($uri = '')
  //    {    
  //        if (is_array($uri))
  //        {
@@ -15,7 +15,7 @@ class BC_Config extends CI_Config {
  //            $uri = $CI->lang->localized($uri);            
  //        }
 
- //        return parent::site_url($uri);
+ //        return parent::base_url($uri);
  //    }
 
 }

@@ -254,7 +254,7 @@ $config['encryption_key'] = '1ho4zgiF5e3lgAd3am6DhussdEjg7uMk';
 $config['sess_cookie_name']		= 'bcsession';
 $config['sess_expiration']		= 7200;
 $config['sess_expire_on_close']	= TRUE;
-$config['sess_encrypt_cookie']	= TRUE;
+$config['sess_encrypt_cookie']	= FALSE;
 $config['sess_use_database']	= TRUE;
 $config['sess_table_name']		= 'sys_sessions';
 $config['sess_match_ip']		= FALSE;
@@ -364,18 +364,3 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 
-
-/*
-|--------------------------------------------------------------------------
-| Propel ORM
-|--------------------------------------------------------------------------
-|
-| If your PHP installation Propel ORM
-|
-*/
-$config['propel_main_script'] = APPPATH.'libraries/Propel/runtime/lib/Propel.php';
-$config['propel_conf_file']   = APPPATH.'models/propel/build/conf/bach-conf.php';
-$config['propel_models_dir']  = APPPATH.'models/propel/build/classes';
-
-/* End of file config.php */
-/* Location: ./application/config/config.php */

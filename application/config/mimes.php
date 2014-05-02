@@ -95,10 +95,15 @@ $mimes = array(	'hqx'	=>	'application/mac-binhex40',
 				'doc'	=>	'application/msword',
 				'docx'	=>	array('application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip'),
 				'xlsx'	=>	array('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip'),
+				'pptx'	=>	array('application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/powerpoint', 'application/vnd.ms-powerpoint'),
 				'word'	=>	array('application/msword', 'application/octet-stream'),
 				'xl'	=>	'application/excel',
 				'eml'	=>	'message/rfc822',
-				'json' => array('application/json', 'text/json')
+				'json'  =>  array('application/json', 'text/json'),
+				'vrml'  =>  array('application/octet-stream', 'x-world/x-vrml', 'model/vrml'),
+				'wrl'   =>  array('application/octet-stream', 'x-world/x-vrml', 'model/vrml'),
+				'apk'   =>  'application/octet-stream',
+				'rar'	=>	array('application/octet-stream', 'application/zip')
 			);
 
 

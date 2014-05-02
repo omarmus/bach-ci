@@ -38,10 +38,19 @@
 |
 */
 
-$route['default_controller'] = "admin/user/login";
+
+$route['default_controller'] = "login";
 $route['login'] = "admin/user/login";
 $route['logout'] = "admin/user/logout";
-$route['404_override'] = '';
+$route['signup'] = "admin/user/signup";
+$route['dashboard'] = "admin/dashboard";
+$route['profile'] = "admin/profile";
+$route['setting'] = "admin/setting";
+$route['c/(:any)'] = "admin/user/confirm_account/$1";
+$route['admin/profile/(:num)'] = "admin/profile/index/$1";
+$route['404_override'] = "404";
+$route['article/(:num)/(:any)'] = "article/index/$1/$2";
+
 
 // URI like '/en/about' -> use controller 'about'
 // $route['^(en|es)/(.+)$'] = "$2";

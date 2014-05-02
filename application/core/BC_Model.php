@@ -1,92 +1,113 @@
 <?php 
 
-/**
-* Class Model implements Propel ORM
-*/
-
 class BC_Model extends CI_Model {
 	
-	protected $_query = null;
 	protected $_table_name = '';
 	protected $_primary_key = 'id';
 	protected $_primary_filter = 'intval';
 	protected $_order_by = '';
 	protected $_timestamps = FALSE;
+	protected $_autoincrement = TRUE;
 	public $rules = array();
 	
 	public function __construct() {
 		parent::__construct();
 	}
-	
-	public function get($pk = NULL) 
+
+	public function all()
 	{
-		if ($pk != NULL) {
-			if (is_array($pk)) {
-				$method = 'findPks';
-			} else {
+		return $this->get();
+	}
+
+	public function find($pk = NULL)
+	{
+		return $this->get($pk);
+	}
+
+	public function filter($where = array())
+	{
+		return $this->get_by($where);
+	}
+
+	public function filter_one($where = array())
+	{
+		return $this->get_by($where, TRUE);
+	}
+
+	public function get($id = NULL, $single = FALSE){
+		
+		if ($id != NULL) {
+			$filter = $this->_primary_filter;
+			if (!is_null($this->_primary_filter)) {
 				$filter = $this->_primary_filter;
-				$pk = $filter($pk);
-				$method = 'findPk';
+				$id = $filter($id);
 			}
-		} else {
-			$method = 'find';
+			$this->db->where($this->_primary_key, $id);
+			$method = 'row';
 		}
-
-		$table = $this->_table_name.'Query';
-		$this->_query = $table::create();
-		$this->order_by();
-
-		return $this->_query->$method($pk);
+		elseif ($single == TRUE) {
+			$method = 'row';
+		}
+		else {
+			$method = 'result';
+		}
+		
+		if (!count($this->db->ar_orderby) && $this->_order_by != '') {
+			$this->db->order_by($this->_order_by);
+		}
+		return $this->db->get($this->_table_name)->$method();
 	}
 
-	public function get_by($where, $single = FALSE) 
-	{
-		$table = $this->_table_name.'Query';
-		$this->_query = $table::create();
-		$this->where($where);
-		$this->order_by();
-		$method = $single === TRUE?'findOne':'find';
-
-		return $this->_query->$method();
+	public function get_by($where, $single = FALSE){
+		$this->db->where($where);
+		return $this->get(NULL, $single);
 	}
-	
-	public function save($data, $pk = NULL, $object = FALSE) 
-	{
+
+	public function save($data, $id = NULL, $object = FALSE) {
+		
 		// Set timestamps
 		if ($this->_timestamps == TRUE) {
 			$now = date('Y-m-d H:i:s');
-			$pk || $data['Created'] = $now;
-			$data['Modified'] = $now;
+			$id || $data['created'] = $now;
+			$data['modified'] = $now;
 		}
-
-		if ($pk === NULL) { // Insert
-			!isset($data[$this->_primary_key]) || $data[$this->_primary_key] = NULL;
-			$table = $this->_table_name;
-			$obj = new $table();
-		} else { // Update
-			$filter = $this->_primary_filter;
-			$pk = $filter($pk);
-			$table = $this->_table_name.'Query';
-			$obj = $table::create()->findPk($pk);
-		}
-
-		$obj->fromArray($data);
-		if ($obj->save()) {
-            return $object ? $obj : $obj->getPrimaryKey();
-        }
-		return NULL;
-	}
-	
-	public function delete($pk) 
-	{
-		$filter = $this->_primary_filter;
-		$pk = $filter($pk);
 		
-		if (!$pk) {
+		// Insert
+		if ($id === NULL) {
+			if ($this->_autoincrement) {
+				!isset($data[$this->_primary_key]) || $data[$this->_primary_key] = NULL;
+			}
+			$this->db->set($data);
+			$this->db->insert($this->_table_name);
+			$id = $this->db->insert_id();
+		}
+		// Update
+		else {
+			if (!is_null($this->_primary_filter)) {
+				$filter = $this->_primary_filter;
+				$id = $filter($id);
+			}
+			$this->db->set($data);
+			$this->db->where($this->_primary_key, $id);
+			$this->db->update($this->_table_name);
+		}
+		
+		return $object ? $this->db->get_where($this->_table_name, array($this->_primary_key => $id)) : $id;
+	}
+
+	public function delete($id){
+		$filter = $this->_primary_filter;
+
+		if (!is_null($filter)) {
+			$id = $filter($id);
+		}
+		
+		if (!$id) {
 			return FALSE;
 		}
-		$table = $this->_table_name.'Query';
-		$table::create()->findPk($pk)->delete();
+		$this->db->where($this->_primary_key, $id);
+		$this->db->limit(1);
+		$this->db->delete($this->_table_name);
 	}
 
 	public function deleteItems($pks)
@@ -99,66 +120,19 @@ class BC_Model extends CI_Model {
 		return TRUE;
 	}
 
-	public function array_from_post($fields)
-	{
-		$data = array();
-		foreach ($fields as $field) {
-			$data[$field] = $this->input->post($field);
-		}
-		return $data;
-	}
-
-	public function array_request($request)
-	{
-		$data = array();
-		foreach ($request as $key => $value) {
-			$data[$key] = $this->input->post($key);
-		}
-		return $data;
-	}
-
-	public function get_array($table = 'SysUsers', $field = 'Email')
+	public function get_array($table = 'sys_users', $field = 'email', $id = 'id_user', $first_option = NULL)
 	{
 		$items = array();
-		$table = "{$table}Query";
-		$field = "get{$field}";
-		$result = $table::create()->find();
-		foreach ($result as $item) {
-			$items[$item->getPrimaryKey()] = $item->$field();
+
+		if (!is_null($first_option)) {
+			$items[0] = $first_option;
+		}
+
+		$results = $this->db->get($table)->result_array();
+		foreach ($results as $item) {
+			$items[$item[$id]] = $item[$field];
 		}
 		return $items;
 	}
 
-	protected function order_by()
-	{
-		if ($this->_order_by != '' OR (is_array($this->_order_by) && count($this->_order_by))) {
-			if (is_array($this->_order_by)) {
-				foreach ($this->_order_by as $k => $v) {
-					$order = "orderBy{$k}";
-					$this->_query->$order($v);
-				}
-			} else {
-				$order = 'orderBy'.$this->_order_by;
-				$this->_query->$order('ASC');
-			}
-		}
-	}
-
-	protected function where($key, $value = NULL)
-	{
-		if ( ! is_array($key)) {
-			$key = array($key => $value);
-		}
-		$exceptions = array('','-', '*');
-		foreach ($key as $k => $v) {
-			if ($v == 'OR') {
-				$this->_query->_or();
-			} else {
-				if (in_array($v, $exceptions) == FALSE) {
-					$filter = "filterBy{$k}";
-					$this->_query->$filter($v);
-				}
-			}	
-		}
-	}
 }
