@@ -55,7 +55,7 @@
         event.preventDefault();
         show_loading('Subiendo documento');
         $.ajaxFileUpload({
-			url           : _base_url + 'cms/article/upload_documents/<?php echo $id_article ?>',
+			url           : base_url + 'cms/article/upload_documents/<?php echo $id_article ?>',
 			secureuri     : false,
 			fileElementId : 'document',
 			dataType      : 'json',
@@ -76,7 +76,7 @@
 				} else {
 					message_ok(success[0].msg);
 				}
-           		$.get(_base_url + 'cms/article/get_files/<?php echo $id_article ?>/DOCUMENT', function(data) {
+           		$.get(base_url + 'cms/article/get_files/<?php echo $id_article ?>/DOCUMENT', function(data) {
            			$('#main-modal .modal-content').html(data);
            		});
             }
@@ -87,7 +87,7 @@
     	if (confirm('Delete!')) {
     		var $this = $(this);
     		show_loading('Eliminando documento');
-    		$.get(_base_url + 'cms/article/delete_file/' + $this.data('role'), function(data) {
+    		$.get(base_url + 'cms/article/delete_file/' + $this.data('role'), function(data) {
     			hide_loading();
     			message_ok('Documento eliminado');
     			$this.parent().parent().parent().remove();

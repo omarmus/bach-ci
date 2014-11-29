@@ -17,7 +17,7 @@
 		var oSortable = $('.sortable').nestedSortable('toArray');
 		
 		show_loading('<?php echo lang('ordinand') ?>...');
-		$.post(_base_url + 'admin/page/order_ajax', { sortable: oSortable }, function (response) {
+		$.post(base_url + 'admin/page/order_ajax', { sortable: oSortable }, function (response) {
 			hide_loading();
 			hide_modal();
 			message_ok('<?php echo lang('ordering') ?>', 1000);

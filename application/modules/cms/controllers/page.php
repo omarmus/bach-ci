@@ -78,7 +78,7 @@ class Page extends Admin_Controller
 		$this->form_validation->set_rules($rules);
 
 		// Process the form
-		if ($this->form_validation->run() == TRUE) {
+		if ($this->form_validation->run($this) == TRUE) {
 			$data = $this->input->post();
 			$this->page_cms->save($data, $pk);
 			echo $pk ? 'UPDATE' : 'CREATE';
@@ -276,7 +276,7 @@ class Page extends Admin_Controller
 		$rules = $this->page_video->rules;
 		$this->form_validation->set_rules($rules);
 
-		if ($this->form_validation->run() == TRUE) {
+		if ($this->form_validation->run($this) == TRUE) {
 			$data = $this->input->post();
 			$data['type'] = stripos(strtolower($data['url']), 'youtube') !== FALSE || stripos(strtolower($data['url']), 'youtu.be') !== FALSE ? 'YOUTUBE' : 'VIMEO';
 			$this->page_video->save($data);

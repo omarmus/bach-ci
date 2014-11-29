@@ -20,6 +20,11 @@ class Language_m extends BC_Model {
 			'field' => 'spanish',
 			'label' => 'Spanish',
 			'rules' => 'trim|required|xss_clean'
+		),
+		'portuguese' => array(
+			'field' => 'portuguese',
+			'label' => 'Portuguese',
+			'rules' => 'trim|required|xss_clean'
 		)
 	);
 
@@ -29,6 +34,7 @@ class Language_m extends BC_Model {
 		$lang->key = '';
 		$lang->english = '';
 		$lang->spanish = '';
+		$lang->portuguese = '';
 		return $lang;
 	}
 
@@ -42,6 +48,7 @@ class Language_m extends BC_Model {
 		if ($this->input->post('description') != "") {
 			$this->db->like('english', $this->input->post('description'));
 			$this->db->or_like('spanish', $this->input->post('description'));
+			$this->db->or_like('portuguese', $this->input->post('description'));
 		}
 
 		return $this->db->get()->result();

@@ -3,6 +3,7 @@
 	<select name="lang_code" class="form-control <?php echo isset($error) ? '' : 'none' ?>">
 		<option value="english" <?php echo set_value('lang_code', $user->lang_code) == 'english' ? 'selected' : '' ?>><?php echo lang('english') ?></option>
 		<option value="spanish" <?php echo set_value('lang_code', $user->lang_code) == 'spanish' ? 'selected' : '' ?>><?php echo lang('spanish') ?></option>
+		<option value="portuguese" <?php echo set_value('lang_code', $user->lang_code) == 'portuguese' ? 'selected' : '' ?>><?php echo lang('portuguese') ?></option>
 	</select>
 	<div class="form-control-static <?php echo isset($error) ? 'none' : '' ?>"><?php echo set_value('lang_code', lang($user->lang_code)) ?>&nbsp;</div>
 </div>

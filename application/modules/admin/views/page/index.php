@@ -81,7 +81,7 @@
 	}
 
 	function get_sections (input, value) {
-		$.post(_base_url + 'admin/page/get_sections', {idModule : input.value}, function (response) {
+		$.post(base_url + 'admin/page/get_sections', {idModule : input.value}, function (response) {
 			var select = $('#container-section select');
 			select.empty();
 			for (var i = 0; i < response.length; i++) {
@@ -99,7 +99,7 @@
 
 	function set_permissions_session () {
 		$('#main-modal').on('hidden.bs.modal', function () {
-			$.post(_base_url + 'admin/page/set_permissions_session');
+			$.post(base_url + 'admin/page/set_permissions_session');
 		});
 	}
 
@@ -119,7 +119,7 @@
 					hide_modal();
 					message_ok("Create success!", 500);
 					setTimeout(function () {
-						show_modal(_base_url + 'admin/page/get_permissions/' + response, function () {
+						show_modal(base_url + 'admin/page/get_permissions/' + response, '', function () {
 							$('#main-modal').on('hidden.bs.modal', function () {
 							  window.location = '';
 							});

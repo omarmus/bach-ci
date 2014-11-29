@@ -8,6 +8,43 @@ class Ajax extends Frontend_Controller {
     	is_ajax();
     }
 
+    public function login_ajax()
+    {
+    	$this->load->model('admin/user_m', 'user');
+
+		// Set rules
+		$this->form_validation->set_rules($this->user->rules_login);
+
+		// Process form
+		if ($this->form_validation->run() == TRUE) {
+
+			$this->load->library('bcrypt');
+			$this->load->library('session');
+
+			$email = $this->input->post('email_login');
+			$password = $this->input->post('password_login');
+
+			//We can login and redirect
+			$login = $this->user->login($email, $password);
+
+			if ($login === 'BLOQUED') {
+				$this->data['error'] = lang('account_blocked');
+			} else {
+				if ($login === 'PENDING') {
+					$this->data['error'] = lang('activate_account');
+				} else {
+					if ($login) {
+						die('OK');
+					} else {
+						$this->data['error'] = lang('email_password_incorrect');
+					}
+				}
+			}
+		}
+
+    	$this->load->view('admin/user/login_ajax', $this->data);
+    }
+
     public function reset_password()
     {
         $this->form_validation->set_rules('email', 'email', 'trim|required|valid_email|callback__registered_email|xss_clean');

@@ -62,7 +62,7 @@
 		event.preventDefault();
 		show_loading('Agregando video');
 		var $form = $(this);
-		$.post(_base_url + 'cms/page/upload_video/<?php echo $id_page ?>', $(this).serialize(), function(data) {
+		$.post(base_url + 'cms/page/upload_video/<?php echo $id_page ?>', $(this).serialize(), function(data) {
 			hide_loading();
 			$form.find('.input-error').remove();
 			if (data.status == 'OK') {
@@ -78,7 +78,7 @@
     	if (confirm('Delete!')) {
     		var $this = $(this);
     		show_loading('Eliminando video');
-    		$.get(_base_url + 'cms/page/delete_video/' + $this.data('role'), function(data) {
+    		$.get(base_url + 'cms/page/delete_video/' + $this.data('role'), function(data) {
     			hide_loading();
     			message_ok('Video eliminado');
     			$this.parent().parent().parent().remove();
@@ -91,7 +91,7 @@
     $buttons_portada.on('click', function() {
 		var $this = $(this);
 		show_loading('Cambiando portada');
-		$.get(_base_url + 'cms/page/set_primary_video/<?php echo $id_page ?>/' + $this.data('role'), function(data) {
+		$.get(base_url + 'cms/page/set_primary_video/<?php echo $id_page ?>/' + $this.data('role'), function(data) {
 			hide_loading();
 			$buttons_portada.removeClass('btn-primary').addClass('btn-default');
 			$this.addClass('btn-primary');

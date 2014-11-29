@@ -145,17 +145,30 @@ class User_M extends BC_Model {
 	public function get_new()
 	{
 		$user = new stdClass();
+		$user->id_rol = 2;
 		$user->username = '';
 		$user->first_name = '';
 		$user->last_name = '';
 		$user->email = '';
-		$user->id_country = 0;
-		$user->id_city = 0;
+		$user->id_country_birthday = 30;
+		$user->id_city_birthday = 0;
+		$user->department_birthday = '';
+		$user->id_country_address = 30;
+		$user->id_city_address = 0;
+		$user->department_address = '';
 		$user->phone = '';
 		$user->mobile = '';
 		$user->birthday = '';
+		$user->birthplace = '';
 		$user->gender = '';
-		$user->id_rol = 2;
+		$user->marital_status = '';
+		$user->level_education = '';
+		$user->occupation = '';
+		$user->address = '';
+		$user->id_church = 0;
+		$user->member = 'NO';
+		$user->pastor_baptism = '';
+		$user->date_baptism = '';
 		return $user;
 	}
 
@@ -166,7 +179,7 @@ class User_M extends BC_Model {
 
 	public function get_users($where = array())
 	{
-		$this->db->select('sys_users.*, sys_roles.name')
+		$this->db->select('sys_users.*, sys_roles.name as name_role, sys_roles.id_rol')
 				 ->from('sys_users')
 				 ->join('sys_roles', 'sys_roles.id_rol=sys_users.id_rol', 'left')
 				 ->where($where);

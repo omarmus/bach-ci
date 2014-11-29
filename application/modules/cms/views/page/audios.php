@@ -53,7 +53,7 @@
         event.preventDefault();
         show_loading('Subiendo audios...');
         $.ajaxFileUpload({
-			url           : _base_url + 'cms/page/upload_audios/<?php echo $id_page ?>',
+			url           : base_url + 'cms/page/upload_audios/<?php echo $id_page ?>',
 			secureuri     : false,
 			fileElementId : 'audio',
 			dataType      : 'json',
@@ -73,7 +73,7 @@
 				} else {
 					message_ok(success[0].msg);
 				}
-           		$.get(_base_url + 'cms/page/get_files/<?php echo $id_page ?>/AUDIO', function(data) {
+           		$.get(base_url + 'cms/page/get_files/<?php echo $id_page ?>/AUDIO', function(data) {
            			$('#main-modal .modal-content').html(data);
            		});
             }
@@ -84,7 +84,7 @@
     	if (confirm('Delete!')) {
     		var $this = $(this);
     		show_loading('Eliminando audio');
-    		$.get(_base_url + 'cms/page/delete_file/' + $this.data('role'), function(data) {
+    		$.get(base_url + 'cms/page/delete_file/' + $this.data('role'), function(data) {
     			hide_loading();
     			message_ok('Audio eliminado');
     			$this.parent().parent().parent().remove();

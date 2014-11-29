@@ -1,0 +1,63 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Country extends Admin_Controller {
+
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->model('parameter/country_m', 'country');
+	}
+
+	public function index()
+	{
+		$this->data['countries'] = $this->country->get_countries();
+
+		$this->data['subview'] = 'parameter/country/index';
+		$this->load->view('admin/_layout_main', $this->data);
+	}
+
+	public function edit($pk = NULL)
+	{
+		is_ajax();
+
+		// Fetch a country or set a new one
+		if ($pk) {
+			$this->data['country'] = $this->country->find($pk);
+			count($this->data['country']) || $this->data['errors'][] = 'country could no be found';
+		} else {
+			$this->data['country'] = $this->country->get_new();
+		}
+
+		// Set up the form
+		$rules = $this->country->rules;
+
+		$this->form_validation->set_rules($rules);
+
+		// Process the form
+		if ($this->form_validation->run() == TRUE) {
+			$data = $this->input->post();
+			$this->country->save($data, $pk);
+			echo $pk ? 'UPDATE' : 'CREATE';
+		} else {
+			// Load the view
+			$this->load->view('parameter/country/edit', $this->data);
+		}	
+	}
+
+	public function delete_selected()
+	{
+		is_ajax();
+		
+		echo $this->country->deleteItems($this->input->post('pks'))?"OK":lang('error_deleted_records');
+	}
+
+	public function set_state($id_country)
+	{
+		is_ajax();
+
+		echo $this->country->save(array('state' => $this->input->post('state')), $id_country);
+	}
+}
+
+/* End of file country.php */
+/* Location: ./application/modules/parameter/controllers/country.php */

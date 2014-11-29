@@ -7,23 +7,28 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="<?php echo base_url('admin/dashboard') ?>"><?php echo $site_name_ ?></a>
+        <a class="navbar-brand" href="<?php echo base_url('dashboard') ?>"><?php echo $site_name_ ?></a>
     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <nav class="collapse navbar-collapse navbar-ex1-collapse">
         <?php echo get_menu_admin($menu_, FALSE, $permissions_); ?>
         <div class="navbar-form navbar-left">
-            <div class="input-group" id="button-search">
-                <input type="search" class="form-control" style="width: 400px;" placeholder="Buscar artículos">
+            <div class="input-group" id="container-search" style="display: none;">
+                <input type="search" class="form-control" style="width: 400px;" placeholder="Buscar autores, artículos">
                 <button class="btn btn-primary input-group-addon"><span class="glyphicon glyphicon-search"></span></button>
+                <button type="button" class="close" id="close-search">&times;</button>
+                <div>
+                    <ul></ul>
+                    <div class="loading-search text-center"><img src="<?php echo base_url() ?>assets/img/spinner.gif"></div>
+                </div>
             </div>
         </div>
-        <div class="navbar-form navbar-right">
+        <div id="t-profile" class="navbar-form navbar-right">
             <button type="submit" class="btn btn-inverse hide" ><span class="glyphicon glyphicon-search"></span></button>
             <button type="submit" class="btn btn-inverse hide" ><span class="glyphicon glyphicon-question-sign"></span></button>
             <ul class="nav navbar-nav navbar-right" id="link-profile">
                 <li class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" >
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <div id="photo-user-menu" style="<?php echo $userdata_['photo'] != "" ? "background-image: url('" . base_url() . 'assets/files/users/thumbnail/'. thumb_image($userdata_['photo']) . "')" : '' ?>">
                             <?php if ($userdata_['photo'] == ""): ?>
                                 <img src="<?php echo base_url('assets/img/'. ($userdata_['gender'] == 'M' ? 'profile-m.jpg' : 'profile.png')) ?>" class="img-responsive" style="background-color: #ffffff;"/>

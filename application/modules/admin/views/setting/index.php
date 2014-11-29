@@ -134,6 +134,7 @@
 							<th><?php echo lang('key') ?></th>
 							<th><?php echo lang('english') ?></th>
 							<th><?php echo lang('spanish') ?></th>
+							<th><?php echo lang('portuguese') ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -145,6 +146,7 @@
 								<td><strong><?php echo $language->key; ?></strong></td>
 								<td><?php echo $language->english; ?></td>
 								<td><?php echo $language->spanish; ?></td>
+								<td><?php echo $language->portuguese; ?></td>
 							</tr>
 						<?php endforeach; endif ?>
 					</tbody>
@@ -176,15 +178,15 @@
 	    events_buttons_edit($('.edit-mail button'));
 
 	    $('#main-table-role .btn-danger').on('click', function() {
-	    	if (confirm('¿Deséa eliminar rol?')) {
+	    	Confirm('¿Deséa eliminar rol?', function () {
 	    		var $this = $(this),
 	    		pk = $this.next().val();
 
-	    		$.get(_base_url + 'admin/setting/delete_role/' + pk, function() {
+	    		$.get(base_url + 'admin/setting/delete_role/' + pk, function() {
 	    			$this.parent().parent().remove();
 	    			message_ok('¡Rol eliminado!');
 	    		});
-	    	}
+	    	});
 	    });
 	});
 </script>

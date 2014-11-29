@@ -54,7 +54,7 @@
         event.preventDefault();
         show_loading('Subiendo photos...');
         $.ajaxFileUpload({
-			url           : _base_url + 'cms/article/upload_photos/<?php echo $id_article ?>',
+			url           : base_url + 'cms/article/upload_photos/<?php echo $id_article ?>',
 			secureuri     : false,
 			fileElementId : 'photo',
 			dataType      : 'json',
@@ -74,7 +74,7 @@
 				} else {
 					message_ok(success[0].msg);
 				}
-           		$.get(_base_url + 'cms/article/get_files/<?php echo $id_article ?>/PHOTO', function(data) {
+           		$.get(base_url + 'cms/article/get_files/<?php echo $id_article ?>/PHOTO', function(data) {
            			$('#main-modal .modal-content').html(data);
            		});
             }
@@ -85,7 +85,7 @@
     	if (confirm('Delete!')) {
     		var $this = $(this);
     		show_loading('Eliminando foto');
-    		$.get(_base_url + 'cms/article/delete_file/' + $this.data('role'), function(data) {
+    		$.get(base_url + 'cms/article/delete_file/' + $this.data('role'), function(data) {
     			hide_loading();
     			message_ok('Foto eliminada');
     			$this.parent().parent().parent().parent().remove();
@@ -103,7 +103,7 @@
     $buttons_portada.on('click', function() {
 		var $this = $(this);
 		show_loading('Cambiando portada');
-		$.get(_base_url + 'cms/article/set_primary_file/<?php echo $id_article ?>/' + $this.data('role') + '/PHOTO', function(data) {
+		$.get(base_url + 'cms/article/set_primary_file/<?php echo $id_article ?>/' + $this.data('role') + '/PHOTO', function(data) {
 			hide_loading();
 			$buttons_portada.removeClass('btn-primary').addClass('btn-default');
 			$this.addClass('btn-primary');

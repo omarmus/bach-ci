@@ -1,6 +1,10 @@
 <?php $this->load->view('admin/components/header'); ?>
 <body class="body-login">
     <div class="spinner"></div>
+    <div id="loading-ajax">
+        <img src="<?php echo base_url() ?>assets/img/loader.gif">
+        <label>Loading...</label>
+    </div>
     <!--[if lt IE 7]>
         <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
     <![endif]-->
@@ -9,7 +13,7 @@
 			$('#language a').on('click', function (event) {
 				event.preventDefault();
 				show_loading('Cambiando de idioma...');
-				$.get(_base_url + 'ajax/change_language/' + $(this).data('role'), function (response) {
+				$.get(base_url + 'ajax/change_language/' + $(this).data('role'), function (response) {
 					window.location = '';
 				});
 			});

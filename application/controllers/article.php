@@ -86,6 +86,41 @@ class Article extends Frontend_Controller {
 	}
 
 	public function get_article($id_article)
+    {
+    	$this->load->model('cms/tag_m', 'tag');
+		$this->load->model('cms/article_tag_m', 'article_tag');
+
+        $this->load->helper('text');
+        $this->data['article'] = $this->article->get_article($id_article);
+        $this->data['edit'] = '';
+        $this->data['id_article'] = $id_article;
+
+        if ($this->data['article']->state == 'ACTIVE') {
+            $this->data['number_visits'] = $this->data['article']->number_visits + 1;
+            $this->article->save(array('number_visits' => $this->data['number_visits']), $id_article);
+        }
+
+        $files = init_files();
+        $results = $this->article_file->get_files($id_article);
+        foreach ($results as $item) {
+            $files[$item->type]['F' . $item->id_file] = $item;
+        }
+        $files['VIDEO'] = $this->article_video->get_by(array('id_article' => $id_article));
+
+        $this->data['files'] = $files;
+        $this->data['imgs'] = get_icons();
+
+        $photo = $this->article_file->get_primary_photo($id_article);
+        $this->data['id_file'] = is_object($photo) ? $photo->id_file : 0;
+
+        $this->data['tags'] = get_array_keys($this->tag->get_tags($id_article), 'id_tag', 'name');
+        $this->data['tags_all'] = get_array_keys($this->tag->all(), 'id_tag', 'name');
+
+        // $this->data['favorite'] = (boolean) count($this->favorites->filter(array('id_article' => $id_article, 'id_user' => ID_USER)));
+        $this->load->view('admin/dashboard/article', $this->data);
+    }
+
+	public function get_article_old($id_article)
 	{
 		$this->data['article'] = $this->article->get($id_article);
 		$this->data['primary_photo'] = $this->article_file->get_primary_photo($id_article);

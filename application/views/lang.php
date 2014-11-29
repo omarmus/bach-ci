@@ -14,7 +14,7 @@
 		loading : '<?php echo lang('loading') ?>',
 		save_changes : '<?php echo lang('save_changes') ?>',
 		loading_city : '<?php echo lang('loading_city') ?>',
-		selected_city : '<?php echo lang('selected_city') ?>',
+		select : '<?php echo lang('select') ?>',
 		deleted_records : '<?php echo lang('deleted_records') ?>',
 		refresh : '<?php echo lang('refresh') ?>',
 		deleted_items : '<?php echo lang('deleted_items') ?>',

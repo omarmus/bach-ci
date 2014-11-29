@@ -36,13 +36,18 @@ class Article_m extends BC_Model {
 	public $rules_save = array(
 		'title' => array(
 			'field' => 'title',
-			'label' => 'Title',
+			'label' => 'Título',
 			'rules' => 'trim|required|max_length[100]|xss_clean'
 		),
 		'body' => array(
 			'field' => 'body',
-			'label' => 'Content',
+			'label' => 'Descripción',
 			'rules' => 'trim|required|xss_clean'
+		),
+		'tags' => array(
+			'field' => 'tags',
+			'label' => 'Tags',
+			'rules' => ''
 		)
 	);
 
@@ -67,17 +72,31 @@ class Article_m extends BC_Model {
 				 ->where('cms_articles.id_article', $pk)->get()->row();
 	}
 
-	public function get_articles($pks, $limit = 1000, $ini = 0)
+	public function get_articles($pks, $limit = 1000, $ini = 0, $where = array(), $like = array(), $id_tag = NULL)
 	{
 		$this->db->select('cms_articles.*, sys_users.first_name, sys_users.last_name, sys_users.gender, sys_users.id_photo, sys_files.filename')
 				 ->from('cms_articles')
 				 ->join('sys_users', 'sys_users.id_user = cms_articles.id_user', 'left')
 				 ->join('sys_files', 'sys_users.id_photo = sys_files.id_file', 'left');
+
+		if (!is_null($id_tag)) {
+			$this->db->join('cms_tags_x_article', 'cms_tags_x_article.id_article = cms_articles.id_article', 'left');
+			$this->db->where('cms_tags_x_article.id_tag', $id_tag);
+		}
 		
 		if (is_array($pks) && count($pks)) {
 			$this->db->where_in('cms_articles.id_page', $pks);
 		} else {
 			$this->db->where('cms_articles.id_page', $pks);
+		}
+
+		if (count($where)) {
+			$this->db->where($where);
+		}
+
+		if (count($like)) {
+			$key = array_keys($like);
+			$this->db->like($key[0], $like[$key[0]], 'after');
 		}
 		
 		$this->db->where('cms_articles.state', 'ACTIVE');
@@ -124,6 +143,33 @@ class Article_m extends BC_Model {
 		return NULL;
 	}
 
+	public function search($filter, $pks = NULL, $limit = null, $type = 'AUTHOR')
+	{
+		$this->db->select('view_articles.*')->from('view_articles');
+
+		if (!is_null($pks)) {
+			if (is_array($pks) && count($pks)) {
+				$this->db->where_in('id_page', $pks);
+			} else {
+				$this->db->or_where('id_page', $pks);
+			}
+		}
+		if (!is_null($limit)) {
+			$this->db->limit($limit);
+		}
+		if ($filter != '') {
+			if ($type == 'AUTHOR') {
+				$this->db->like('first_name', $filter);
+				$this->db->or_like('last_name', $filter);
+				$this->db->group_by('id_user');
+			} else {
+				$this->db->like('title', $filter);	
+			}
+			return $this->db->get()->result();
+		}
+		return NULL;
+	}
+
 	public function get_articles_random($pks, $limit = 10, $exceptions = array())
 	{
 		$this->db->select('cms_articles.*, sys_users.first_name, sys_users.last_name, sys_users.gender, sys_users.id_photo, sys_files.filename')
@@ -158,4 +204,12 @@ class Article_m extends BC_Model {
 		$this->db->delete(array('cms_files_x_article', 'cms_videos_x_article'));
 	}
 
+	public function filter_date($id_page)
+	{
+		$this->db->select('created')->from('cms_articles');
+		$this->db->where(array('id_page' => $id_page, 'state' => 'ACTIVE'));
+		$this->db->order_by('created', 'asc');
+
+		return $this->db->get()->result();
+	}
 }

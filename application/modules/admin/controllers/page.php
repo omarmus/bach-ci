@@ -82,7 +82,7 @@ class Page extends Admin_Controller
 		$this->form_validation->set_rules($rules);
 
 		// Process the form
-		if ($this->form_validation->run() == TRUE) {
+		if ($this->form_validation->run($this) == TRUE) {
 			if ($pk) {
 				if ($page_type == 'module') {
 					$_POST['id_module'] = $_POST['id_section'] = 0;

@@ -37,7 +37,7 @@ class Setting extends Admin_Controller {
 		$this->form_validation->set_rules($rules);
 
 		// Process the form
-		if ($this->form_validation->run() == TRUE) {
+		if ($this->form_validation->run($this) == TRUE) {
 			$data = $this->input->post();
 			$this->language->save($data, $pk);
 			$this->session->set_flashdata('language', 'YES');
@@ -67,7 +67,7 @@ class Setting extends Admin_Controller {
 		$this->form_validation->set_rules($rules);
 
 		// Process the form
-		if ($this->form_validation->run() == TRUE) {
+		if ($this->form_validation->run($this) == TRUE) {
 			$data = $this->input->post();
 			$this->role->save($data, $pk);
 			$this->session->set_flashdata('role', 'YES');
@@ -95,7 +95,7 @@ class Setting extends Admin_Controller {
 	public function update_general()
 	{
 		$this->form_validation->set_rules($this->parameter->rules_general);
-		if ($this->form_validation->run() == TRUE) {
+		if ($this->form_validation->run($this) == TRUE) {
 			$items = array('SYSTEM_NAME', 'SYSTEM_EMAIL');
 			foreach ($items as $item) {
 				$this->parameter->save(array('value' => $this->input->post($item)), $item);
@@ -111,7 +111,7 @@ class Setting extends Admin_Controller {
 	public function update_mail()
 	{
 		$this->form_validation->set_rules($this->parameter->rules_mail);
-		if ($this->form_validation->run() == TRUE) {
+		if ($this->form_validation->run($this) == TRUE) {
 			$items = array('SMTP_HOST', 'SMTP_USER', 'SMTP_PASS', 'SMTP_PORT');
 			foreach ($items as $item) {
 				$this->parameter->save(array('value' => $this->input->post($item)), $item);
@@ -129,14 +129,16 @@ class Setting extends Admin_Controller {
 		$this->load->helper('file');
 		$languages = $this->language->all();
 
-		$english = $spanish = '<?php '."\n";
+		$english = $spanish = $portuguese = '<?php '."\n";
 		foreach ($languages as $lang) {
 			$english .= '$lang["' . $lang->key . '"] = "' . str_replace(array("'", '"'), array("\'", '\"'), $lang->english) . '";' . "\n";
 			$spanish .= '$lang["' . $lang->key . '"] = "' . str_replace(array("'", '"'), array("\'", '\"'), $lang->spanish) . '";' . "\n";
+			$portuguese .= '$lang["' . $lang->key . '"] = "' . str_replace(array("'", '"'), array("\'", '\"'), $lang->portuguese) . '";' . "\n";
 		}
 
 		write_file('./application/language/english/bach_lang.php', $english);
 		write_file('./application/language/spanish/bach_lang.php', $spanish);
+		write_file('./application/language/portuguese/bach_lang.php', $portuguese);
 	}
 
 	public function set_on_off($parameter)

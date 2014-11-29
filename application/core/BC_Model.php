@@ -127,7 +127,7 @@ class BC_Model extends CI_Model {
 		if (!is_null($first_option)) {
 			$items[0] = $first_option;
 		}
-
+		$this->db->order_by($field, 'asc');
 		$results = $this->db->get($table)->result_array();
 		foreach ($results as $item) {
 			$items[$item[$id]] = $item[$field];

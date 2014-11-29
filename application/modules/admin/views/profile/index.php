@@ -1,36 +1,42 @@
-<?php $profile = isset($profile) && $profile; ?>
 <?php $photo_default = $user->gender == 'M' ? 'profile-m.jpg' : 'profile.png'; ?>
 <div class="row profile-form">
 	<div class="col-md-3">
-		<div class="panel panel-default">
-			<div class="panel-body" id="container-photo">
-				<?php $this->load->view('admin/profile/add_photo', $this->data); ?>
+		<div class="link-profile">
+			<div class="panel panel-default" style="margin-bottom: 10px;">
+				<div class="panel-heading" style="line-height: 14px; padding: 6px 10px;">
+					<strong style="font-size: 16px;"><?php echo $user->first_name . ' ' . $user->last_name ?></strong><br>
+				</div>
+				<div class="panel-body" id="container-photo">
+					<?php $this->load->view('admin/profile/add_photo', $this->data); ?>
+				</div>
 			</div>
 		</div>
 	</div>
 	<div class="col-md-9">
-		<?php if (!$profile): ?>
+		<?php if ($profile): ?>
 		<ul class="nav nav-tabs" id="my-profile">
-			<li class="active"><a href="#data"><strong class="title-profile"><?php echo $user->first_name . ' ' . $user->last_name ?></strong></a></li>
+			<li class="active"><a href="#data">Mis datos personales</a></li>
 			<li><a href="#password"><?php echo lang('my_password') ?></a></li>
 			<li><a href="#settings"><?php echo lang('my_preferences') ?></a></li>
 		</ul>	
 		<?php endif ?>
 		<div class="tab-content settings">
 			<div class="tab-pane active" id="data">
-				<div class="panel panel-default">
+				<div class="panel panel-default" style="margin-bottom: 10px;">
 					<div class="panel-heading clearfix title-panel">
 						<div class="pull-left">
 							<h3 class="panel-title title-edit">
 								<em>
 									<small>
-										<strong>Usuario creado el</strong> <?php echo datetime_literal($user->created) ?><br>
-										<strong>Ultima actualización</strong> <?php echo datetime_literal($user->modified) ?>
+										<strong>Usuario creado el</strong> <?php echo date_literal($user->created) ?>
+										<?php if ($profile || ID_USER < 3 ): ?>
+										<br><strong>Ultima actualización</strong> <?php echo datetime_literal($user->modified) ?>
+										<?php endif ?>
 									</small>
 								</em>
 							</h3>
 						</div>
-						<?php if (TRUE || ID_USER < 3 ): ?>
+						<?php if ($profile || ID_USER < 3 ): ?>
 						<div class="pull-right edit-data">
 							<?php echo button_default(lang('edit'), 'btn-edit-data', 'glyphicon-edit', 'UPDATE') ?>
 							<span class="none">
@@ -47,7 +53,7 @@
 					</div>
 				</div>
 			</div>
-			<?php if (!$profile): ?>
+			<?php if ($profile): ?>
 			<div class="tab-pane" id="password">
 				<div class="panel panel-default">
 					<div class="panel-heading clearfix title-panel">
@@ -94,8 +100,19 @@
 		</div>
 	</div>
 </div>
+
 <script type="text/javascript">
+
 	$(document).ready(function() {
+
+	    $(window).on('scroll', function(event) {
+			event.preventDefault();
+			var scrollTop = $(window).scrollTop();
+			$link_profile.css({
+				position: scrollTop > 40 ? 'fixed' : 'static', top: '60px', 
+				width : scrollTop > 40 ? $link_profile.width() : 'auto'
+			});
+		});
 
 		$('#my-profile a').click(function (e) {
 			e.preventDefault();
@@ -112,9 +129,10 @@
 	    events_buttons_edit($('.edit-setting button'));
 	});
 </script>
+
 <style type="text/css">
 	.modal-body .form-group {width: 33.3%;}
-	.panel-body {padding: 10px;}
+	.panel-body {padding: 5px;}
 	.title-profile {font-size: 1.1em; line-height: 1em;}
 	.profile-form > div {padding: 0 5px;}
 	.title-edit {line-height: 12px; margin-top: -6px;}

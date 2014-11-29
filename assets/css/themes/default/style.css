@@ -1,3 +1,28 @@
-.btn, .form-control, .label, .modal-content, .alert, .nav-tabs > li > a, .navbar-nav > li > .dropdown-menu, .input-group-lg > .form-control, .input-group-lg > .input-group-addon, .input-group-lg > .input-group-btn > .btn, .input-group-addon, .thumbnail, .panel-heading, .panel {
+.btn, .form-control, .label, .modal-content, .alert, .nav-tabs > li > a, .navbar-nav > li > .dropdown-menu, .input-group-lg > .form-control, .input-group-lg > .input-group-addon, .input-group-lg > .input-group-btn > .btn, .input-group-addon, .thumbnail, .panel-heading, .panel, .dropdown-menu {
   border-radius: 0;
+}
+.panel {
+	border: 1px solid #ccc;
+}
+.panel > .list-group .list-group-item {
+	border: none;
+	border-top: 1px solid #F0F0F0;
+	border-bottom: 1px solid #F0F0F0;
+}
+.chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+	height: 30px;
+	font-size: 14px;
+	color: #999999;
+	padding: 5px 0;
+}
+.chosen-container-multi .chosen-choices li.search-choice {
+	margin: 5px 5px 5px 0;
+}
+.chosen-container-active .chosen-choices {
+	box-shadow: none;
+}
+.chosen-container-multi .chosen-choices {
+	border: none;
+	border-top: 1px solid #cccccc;
+	background-image: none;
 }

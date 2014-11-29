@@ -5,14 +5,10 @@ class Template extends Admin_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->model('template_m', 'template');
+		$this->load->model('cms/template_m', 'template');
 	}
 	public function index()
 	{
-		$this->data['breadcrumb'] = array (
-			array ('link' => 'cms/page', 'text' => lang('pages')),
-			array ('text' => lang('templates'))
-		);
 		$this->data['templates'] = $this->template->all();
 
 		$this->data['subview'] = 'cms/template/index';
@@ -37,7 +33,7 @@ class Template extends Admin_Controller {
 		$this->form_validation->set_rules($rules);
 
 		// Process the form
-		if ($this->form_validation->run() == TRUE) {
+		if ($this->form_validation->run($this) == TRUE) {
 			$data = $this->input->post();
 			$this->template->save($data, $pk);
 			echo $pk ? 'UPDATE' : 'CREATE';

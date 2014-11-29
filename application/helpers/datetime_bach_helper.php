@@ -34,6 +34,9 @@ function format_date($format, $date)
 
 function date_literal($date)
 {
+    if (is_null($date) || strlen($date) == 0) {
+        return '';
+    }
     $month_names = array('01' => 'cal_january', '02' => 'cal_february', '03' => 'cal_march', '04' => 'cal_april', '05' => 'cal_mayl', '06' => 'cal_june', '07' => 'cal_july', '08' => 'cal_august', '09' => 'cal_september', '10' => 'cal_october', '11' => 'cal_november', '12' => 'cal_december');
 
     $date = explode(' ', $date);
@@ -43,6 +46,9 @@ function date_literal($date)
 
 function datetime_literal($date)
 {
+    if (is_null($date) || strlen($date) == 0) {
+        return '';
+    }
     $month_names = array('01' => 'cal_january', '02' => 'cal_february', '03' => 'cal_march', '04' => 'cal_april', '05' => 'cal_mayl', '06' => 'cal_june', '07' => 'cal_july', '08' => 'cal_august', '09' => 'cal_september', '10' => 'cal_october', '11' => 'cal_november', '12' => 'cal_december');
     $day_names = array('cal_sunday', 'cal_monday', 'cal_tuesday', 'cal_wednesday', 'cal_thursday', 'cal_friday', 'cal_saturday');
 
@@ -55,6 +61,9 @@ function datetime_literal($date)
 
 function time_literal($date)
 {
+    if (is_null($date) || strlen($date) == 0) {
+        return '';
+    }
     $date = explode(' ', $date);
     $time = explode(':', $date[1]);
 

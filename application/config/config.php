@@ -252,7 +252,7 @@ $config['encryption_key'] = '1ho4zgiF5e3lgAd3am6DhussdEjg7uMk';
 |
 */
 $config['sess_cookie_name']		= 'bcsession';
-$config['sess_expiration']		= 7200;
+$config['sess_expiration']		= 3600;
 $config['sess_expire_on_close']	= TRUE;
 $config['sess_encrypt_cookie']	= FALSE;
 $config['sess_use_database']	= TRUE;

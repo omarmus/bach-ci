@@ -17,7 +17,7 @@
 </form>
 
 <div class="section-buttons">
-	<?php echo button_add(lang('add_user'), 'admin/user/edit'); ?>
+	<?php echo button_add(lang('add_user'), 'admin/user/edit', 'lg'); ?>
 	<?php echo button_delete('admin/user/delete_selected'); ?>
 </div>
 
@@ -36,14 +36,15 @@
 	</thead>
 	<tbody>
 	<?php if (count($users)): foreach ($users as $user): ?>
+		<?php if ($user->id_rol < 3 && ID_ROL > 1) continue;  ?>
 		<tr>
 			<td><?php echo $user->id_user ?></td>
-			<td class="edit"><?php echo button_edit('admin/user/edit/' . $user->id_user) ?></td>
+			<td class="edit"><?php echo button_edit('admin/user/edit/' . $user->id_user, 'lg') ?></td>
 			<td class="edit"><?php echo button_modal('' ,'admin/user/password/' . $user->id_user, 'glyphicon-lock', NULL, 'UPDATE') ?></td>
 			<td><a href="<?php echo base_url() . 'admin/profile/' . $user->id_user ?>"><?php echo $user->last_name . ' ' . $user->first_name ?></a></td>
 			<td><?php echo $user->email; ?></td>
 			<td><?php echo $user->username; ?></td>
-			<td><?php echo $user->name; ?></td>
+			<td><?php echo $user->name_role; ?></td>
 			<td><?php echo state_label($user->state); ?></td>
 		</tr>
 	<?php endforeach; endif ?>
@@ -66,7 +67,7 @@
 
 	function reset_password (id_user) {
 		show_loading('Enviando mail...');
-		$.post(_base_url + 'admin/user/reset_password/' + id_user, function (response) {
+		$.post(base_url + 'admin/user/reset_password/' + id_user, function (response) {
 			hide_loading();
 			if (response.state == 'OK') {
 				hide_modal();

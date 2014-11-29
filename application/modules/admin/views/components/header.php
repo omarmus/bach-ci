@@ -17,8 +17,6 @@
         <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/lib/jquery.gritter/css/jquery.gritter.css') ?>">
         <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/lib/datepicker/css/datepicker.css') ?>">
         <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/lib/timepicker/css/bootstrap-timepicker.min.css') ?>">
-        <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/main.css') ?>">
-        <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/themes/default/style.css') ?>">
         <!-- <link rel="stylesheet" href="<?php echo base_url('assets/lib/bootstrap/css/bootstrap-theme.min.css') ?>"> -->
         <!--[if lt IE 9]>
             <script src="<?php echo base_url('assets/js/html5-3.6-respond-1.1.0.min.js') ?>"></script>
@@ -49,8 +47,16 @@
             <script src="<?php echo base_url('assets/lib/ajax-file-uploader/ajaxfileupload.js') ?>"></script>
         <?php endif; ?>
 
+        <?php if (isset($chosen) && $chosen): ?>
+            <link rel="stylesheet" href="<?php echo base_url('assets/lib/chosen/chosen.min.css') ?>" />
+            <script src="<?php echo base_url('assets/lib/chosen/chosen.jquery.min.js') ?>"></script>
+        <?php endif; ?>
+
+        <link href="<?php echo base_url('assets/lib/magicsuggest/magicsuggest-min.css')?>" rel="stylesheet">
+        <script src="<?php echo base_url('assets/lib/magicsuggest/magicsuggest-min.js')?>"></script>
+
         <?php if (isset($mansonry) && $mansonry): ?>
-            <script type="text/javascript" src="<?php echo base_url('assets/lib/FitVids.js') ?>"></script>
+            <!-- <script type="text/javascript" src="<?php echo base_url('assets/lib/FitVids.js') ?>"></script> -->            
             <script type="text/javascript" src="<?php echo base_url('assets/lib/masonry.pkgd.min.js');?>"></script>
             <script type="text/javascript">
                 $(document).ready(function() {
@@ -63,8 +69,11 @@
             <script src="<?php echo base_url('assets/lib/audiojs/audiojs/audio.min.js') ?>"></script>
         <?php endif; ?>
 
+        <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/main.css') ?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/themes/default/style.css') ?>">
+
         <script type="text/javascript">
-            var _base_url = '<?php echo base_url() ?>',
+            var base_url = '<?php echo base_url() ?>',
                 _uri = '<?php echo $this->uri->uri_string() ?>',
                 _width = 0;
                 // _my_user = <?php if ($my_user) : ?>JSON.parse('<?php echo $my_user ?>')<?php else : ?>{}<?php endif; ?>            

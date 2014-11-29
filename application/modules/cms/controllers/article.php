@@ -54,7 +54,7 @@ class Article extends Admin_Controller
 		$this->form_validation->set_rules($rules);
 
 		// Process the form
-		if ($this->form_validation->run() == TRUE) {
+		if ($this->form_validation->run($this) == TRUE) {
 			$data = $this->input->post();
 			$pk || $data['id_user'] = ID_USER;
 			unset($data['type']);
@@ -225,7 +225,7 @@ class Article extends Admin_Controller
 		$rules = $this->article_video->rules;
 		$this->form_validation->set_rules($rules);
 
-		if ($this->form_validation->run() == TRUE) {
+		if ($this->form_validation->run($this) == TRUE) {
 			$data = $this->input->post();
 			$data['type'] = stripos(strtolower($data['url']), 'youtube') !== FALSE || stripos(strtolower($data['url']), 'youtu.be') !== FALSE ? 'YOUTUBE' : 'VIMEO';
 			$this->article_video->save($data);

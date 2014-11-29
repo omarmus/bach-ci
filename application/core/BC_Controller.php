@@ -15,7 +15,6 @@ class BC_Controller extends MX_Controller
 
 	public function _required_dropdown($value)
 	{
-		var_dump($value);
 		if ($value == 0 || $value == '-' || $value == '*') {
 			$this->form_validation->set_message('_required_dropdown', 'The %s field is required.');
 			return FALSE;

@@ -15,7 +15,6 @@
 <div class="section-buttons">
 	<?php echo button_add(lang('add_page'), 'cms/page/edit'); ?>
 	<?php echo button_modal(lang('order_pages'), 'cms/page/order', 'glyphicon-list', NULL, 'UPDATE') ?>
-	<?php echo button_link(lang('templates'), 'cms/template', 'glyphicon-list-alt', NULL, 'READ') ?>
 	<?php echo button_delete('cms/page/delete_selected'); ?>
 </div>
 

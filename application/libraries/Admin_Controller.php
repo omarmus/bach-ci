@@ -35,7 +35,11 @@ class Admin_Controller extends BC_Controller
  		$exception_uris = array('login', 'logout', 'signup', 'c');
  		if (in_array($this->uri->segment(1), $exception_uris) == FALSE) {
  			if ($this->user->loggedin() == FALSE) {
-				redirect('login');
+ 				if ($this->input->is_ajax_request()) {
+ 					die("SESSION_EXPIRED");
+ 				} else {
+ 					redirect('login');	
+ 				}
 			}
  		}
 
@@ -75,15 +79,7 @@ class Admin_Controller extends BC_Controller
 	 		define('ID_USER', $this->data['userdata_']['id_user']);
 	 		define('ID_ROL', $this->data['userdata_']['id_rol']);
 
-			//Data for chat // en proceso para mover
-	 		// $this->data['my_user'] = json_encode(array(
-	 		// 	'id' => $this->data['userdata_']['id_user'],
-	 		// 	'image' => base_url() . 'assets/files/users/thumbnail/' . thumb_image($this->data['userdata_']['photo']),
-	 		// 	'name' => $this->data['userdata_']['first_name'] . ' ' . $this->data['userdata_']['last_name'],
-	 		// 	'connect' => 'connect'
-	 		// ));
-
-	 		// $this->data['users_'] = $this->user->get_users_chat($this->data['userdata_']['id_user']);
+	 		$this->data['users_'] = $this->user->get_users_chat($this->data['userdata_']['id_user']);
  		}
 
  		// set Language
@@ -96,6 +92,7 @@ class Admin_Controller extends BC_Controller
  		$this->lang->load('bach', $this->data['language']);
  		$this->lang->load('calendar', $this->data['language']);
  		$this->config->set_item('language', $this->data['language']);
+ 		// end set Language
  		
  		$this->data['title_'] = count($this->data['page_']) ? $this->data['page_']->title : ucfirst($page ? $page : $module);
  		$this->data['meta_title_'] = $this->data['title_'] . ' - ' . $this->data["site_name_"];

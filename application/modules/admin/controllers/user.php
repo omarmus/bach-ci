@@ -3,6 +3,12 @@
 class User extends Admin_Controller
 {
 
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->model('smi/church_m', 'church');
+	}
+
 	public function index()
 	{
 		$this->data['users'] = $this->user->get_users();
@@ -24,15 +30,13 @@ class User extends Admin_Controller
 			$user = $this->user->find($pk);
 			$this->data['user'] = $user;
 			count($this->data['user']) || $this->data['errors'][] = 'User could no be found';
-			if (!is_null($user->id_country) || !is_null($user->id_city) || !is_null($user->birthday) || strlen($user->phone) || strlen($user->mobile)) {
-				$this->data['more'] = 'YES';
-			}
 		} else {
 			$this->data['user'] = $this->user->get_new();
 		}
 
-		// Roles for dropdown
+		// Dropdowns
 		$this->data['roles'] = $this->user->get_roles_array();
+		$this->data['churches'] = $this->church->get_churches_array(lang('select'));
 
 		// Set up the form
 		$rules = $this->user->rules_edit;
@@ -50,7 +54,7 @@ class User extends Admin_Controller
 		}
 
 		// Process the form
-		if ($this->form_validation->run() == TRUE) {
+		if ($this->form_validation->run($this) == TRUE) {
 			
 			$data = $this->input->post();
 			
@@ -108,6 +112,7 @@ class User extends Admin_Controller
 
 	public function login()
 	{
+
 		$this->load->library('bcrypt');
 
 		// Redirect a user if he's already logged in
@@ -118,7 +123,7 @@ class User extends Admin_Controller
 		$this->form_validation->set_rules($this->user->rules_login);
 
 		// Process form
-		if ($this->form_validation->run() == TRUE) {
+		if ($this->form_validation->run($this) == TRUE) {
 
 			$email = $this->input->post('email_login');
 			$password = $this->input->post('password_login');
@@ -150,7 +155,7 @@ class User extends Admin_Controller
 		}
 
 		// Load view
-		$this->data['subview'] = 'admin/user/create';
+		$this->data['subview'] = 'admin/user/signup';
 		$this->load->view('admin/_layout_login', $this->data);
 	}
 
@@ -168,7 +173,7 @@ class User extends Admin_Controller
 		$this->form_validation->set_rules($this->user->rules_create);
 
 		// Process the form
-		if ($this->form_validation->run() == TRUE) {
+		if ($this->form_validation->run($this) == TRUE) {
 			
 			$data = $this->input->post();
 			$this->load->library('bcrypt');
@@ -195,7 +200,7 @@ class User extends Admin_Controller
 		}
 		
 		// Load view
-		$this->data['subview'] = 'admin/user/create';
+		$this->data['subview'] = 'admin/user/signup';
 		$this->load->view('admin/_layout_login', $this->data);
 	}
 

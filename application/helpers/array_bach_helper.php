@@ -40,44 +40,52 @@ function get_array_dropdown($table = 'sys_users', $field = 'email', $id = 'id_us
     return $items;
 }
 
-function get_states_user()
+function get_departments($id_country = NULL, $first_option = FALSE)
 {
-    return array(
-        'ACTIVE' => strtoupper(lang('active')),
-        'CREATED' => strtoupper(lang('created')),
-        'INACTIVE' => strtoupper(lang('inactive')),
-        'BLOQUED' => strtoupper(lang('bloqued'))
-    );
+    $CI =& get_instance();
+
+    $CI->db->select('region_name');
+    $CI->db->from('sys_cities');
+    $CI->db->where('id_country', $id_country);
+    $CI->db->order_by('region_name', 'asc');
+    $CI->db->group_by('region_name');
+    $results = $CI->db->get()->result();
+
+    $items = array();
+
+    if ($first_option) {
+        $items[0] = lang('select') . '...';
+    }
+
+    foreach ($results as $item) {
+        $items[$item->region_name] = $item->region_name;
+    }
+    return $items;
 }
 
-function get_type_page()
+function get_array_keys($list, $key, $value)
 {
-    return array(
-        'MODULE' => strtoupper(lang('module')),
-        'SECTION' => strtoupper(lang('section')),
-        'SUBSECTION' => strtoupper(lang('subsection'))
-    );
+    $array = array();
+    foreach (object_to_array($list) as $item) {
+        $array[$item[$key]] = $item[$value];
+    }
+    return $array;
 }
 
-function get_type_page_cms()
-{
-    return array(
-        'SECTION' => strtoupper(lang('section')),
-        'SUBSECTION' => strtoupper(lang('subsection'))
-    );
+function object_to_array ($object) {
+    if(!is_object($object) && !is_array($object))
+        return $object;
+
+    return array_map('object_to_array', (array) $object);
 }
 
-function get_states()
-{
-    return array(
-        'ACTIVE' => strtoupper(lang('active')),
-        'INACTIVE' => strtoupper(lang('inactive'))
-    );
-}
-
-function json_dropdown($array)
+function json_dropdown($array, $new = FALSE)
 {
     $json = array();
+
+    if ($new) {
+        $json[] = array('value' => 'new', 'text' => 'Agregar nueva ciudad');
+    }
     foreach ($array as $key => $value) {
         $json[] = array('value' => $key, 'text' => $value);
     }
@@ -186,5 +194,92 @@ function init_files()
         'DOCUMENT' => array(),
         'AUDIO' => array(),
         'APK' => array()
+    );
+}
+
+function months()
+{
+    return array (
+        '01' => 'Enero',
+        '02' => 'Febrero',
+        '03' => 'Marzo',
+        '04' => 'Abril',
+        '05' => 'Mayo',
+        '06' => 'Junio',
+        '07' => 'Julio',
+        '08' => 'Agosto',
+        '09' => 'Septiembre',
+        '10' => 'Octubre',
+        '11' => 'Noviembre',
+        '12' => 'Diciembre'
+    );
+}
+
+function icons_notifications()
+{
+    return array(
+        'MESSAGE' => 'glyphicon-envelope',
+        'ALERT' => 'glyphicon-warning-sign',
+        'CHAT' => 'glyphicon-comment',
+        'INVITATION' => 'glyphicon-user'
+    );
+}
+
+function get_states_user()
+{
+    return array(
+        'ACTIVE' => strtoupper(lang('active')),
+        'PENDING' => strtoupper(lang('pending')),
+        'CREATED' => strtoupper(lang('created')),
+        'INACTIVE' => strtoupper(lang('inactive')),
+        'BLOQUED' => strtoupper(lang('bloqued'))
+    );
+}
+
+function get_marital_status()
+{
+    return array(
+        'SINGLE' => 'Soltero(a)',
+        'MARRIED' => 'Casado(a)',
+        'CONCUBINE' => 'Concubino(a)',
+        'SEPARATE' => 'Separado(a)',
+        'DIVORCED' => 'Divorciado(a)',
+        'WIDOW' => 'Viudo(a)'
+    );
+}
+
+function get_level_education()
+{
+    return array(
+        'NONE' => 'Ninguno',
+        'PRIMARY' => 'Primaria',
+        'SECUNDARY' => 'Secundaria',
+        'TECHNICAL' => 'Técnica',
+        'PROFESSIONAL' => 'Profesional'
+    );
+}
+
+function get_type_page()
+{
+    return array(
+        'MODULE' => strtoupper(lang('module')),
+        'SECTION' => strtoupper(lang('section')),
+        'SUBSECTION' => strtoupper(lang('subsection'))
+    );
+}
+
+function get_type_page_cms()
+{
+    return array(
+        'SECTION' => strtoupper(lang('section')),
+        'SUBSECTION' => strtoupper(lang('subsection'))
+    );
+}
+
+function get_states()
+{
+    return array(
+        'ACTIVE' => strtoupper(lang('active')),
+        'INACTIVE' => strtoupper(lang('inactive'))
     );
 }

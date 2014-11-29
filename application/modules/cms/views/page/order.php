@@ -18,7 +18,7 @@
 			pages_app = $($sortable[1]).nestedSortable('toArray');
 
 		show_loading('<?php echo lang('ordinand') ?>...');
-		$.post(_base_url + 'cms/page/order_ajax', { pages_cms: pages_cms, pages_app: pages_app }, function (response) {
+		$.post(base_url + 'cms/page/order_ajax', { pages_cms: pages_cms, pages_app: pages_app }, function (response) {
 			hide_loading();
 			hide_modal();
 			message_ok('<?php echo lang('ordering') ?>', 1000);

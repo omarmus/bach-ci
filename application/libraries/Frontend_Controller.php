@@ -17,11 +17,20 @@ class Frontend_Controller extends BC_Controller {
 
  		// Helpers
  		$this->load->helper('text');
+ 		$this->load->helper('language');
 
  		//Configurations
 		$this->form_validation->set_error_delimiters('<div class="input-error">','</div>');
 
 		$this->data['menu'] = $this->page->get_nested();
+
+		// set Language
+ 		$this->data['language'] = $this->input->cookie('bclanguage');
+ 		$this->data['language'] = $this->data['language'] == FALSE ? 'spanish' : $this->data['language'];
+ 		$this->lang->load('bach', $this->data['language']);
+ 		$this->lang->load('calendar', $this->data['language']);
+ 		$this->config->set_item('language', $this->data['language']);
+ 		// end set Language
  	}
 
 }

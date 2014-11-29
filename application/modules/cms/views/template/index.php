@@ -1,6 +1,6 @@
 <form class="filter" method="post">
 	<div>
-		<label><?php echo lang('key') ?>/<?php echo lang('name') ?></label>		
+		<label><?php echo lang('name') ?></label>		
 		<input type="text" name="name" value="<?php echo $this->input->post('name') ?>" class="form-control">
 	</div>
 	<?php echo button_filter() ?>

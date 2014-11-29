@@ -1,8 +1,25 @@
-var oTable;
+var oTable = null,
+	tmpl_alert = null,
+	$alert_modal = null;
 
 $(document).ready(function() {
 	oTable = $('#main-table').dataTable();
 	$('.btn-delete').tooltip();
+	tmpl_alert = $('#tmpl-alert').html();
+	$alert_modal = $("#alert-modal");
+});
+
+$.ajaxSetup({
+    dataFilter : function(data, type) {
+        if (data == 'SESSION_EXPIRED') {
+        	$alert_modal.load(base_url + 'ajax/login_ajax', function () {
+        		hide_loading();
+        		$alert_modal.modal({keyboard : false}).modal('show').off('click.dismiss.bs.modal');
+        	});
+        	throw new Error('Session expired.');
+        }
+        return data;
+    }
 });
 
 $('header .dropdown-menu').filter(function () {
@@ -10,6 +27,20 @@ $('header .dropdown-menu').filter(function () {
 		$(this).parent().hide();
 	}
 });
+
+function Alert(message, callback_function, title) {
+    $alert_modal.html(nano(tmpl_alert, {title : title || 'Alerta', message : message, button_cancel : 'hide'})).modal();
+    if (callback_function) {
+    	$alert_modal.find('.modal-footer .btn-primary').on('click', callback_function);
+    }
+}
+
+function Confirm(message, callback_function, title) {
+    $alert_modal.html(nano(tmpl_alert, {title : title || 'Confirmar', message : message, button_cancel : ''})).modal();
+    if (callback_function) {
+    	$alert_modal.find('.modal-footer .btn-primary').on('click', callback_function);
+    }
+}
 
 // Data table
 $.extend( true, $.fn.dataTable.defaults, {
@@ -25,7 +56,7 @@ $.extend( true, $.fn.dataTable.defaults, {
         "sLengthMenu": lang.datatable.rows,
         "sZeroRecords": "Nothing found - sorry",
         "sInfo": lang.datatable.info,
-        "sInfoEmpty": lang.datatable.show_empty,
+        "sInfgetoEmpty": lang.datatable.show_empty,
         "oPaginate": {
 	        "sNext": "&raquo;",
 	        "sPrevious": "&laquo;",
@@ -73,7 +104,7 @@ function delete_selected (oTable, url, refresh) {
 	if (pks.length) {
 		var message = lang.delete_item.replace(/%n%/gi, pks.length);
 		message = message.replace(/%s%/gi, (pks.length > 1 ? 's' : ''));
-		if (confirm(message)) {
+		Confirm(message, function () {
 			show_loading(lang.deleted_items);
 			$.post(url, {pks: pks}, function (response) {
 				if (response == 'OK') {
@@ -97,7 +128,7 @@ function delete_selected (oTable, url, refresh) {
 					}, 4000);
 				}
 			});
-		}
+		});
 	}
 }
 
@@ -126,9 +157,15 @@ function addRow(oTable, data) {
     oTable.fnAddData(data);
 }
 
-function show_modal (url, callback_function) {
+function show_modal (url, size, callback_function) {
 	show_loading();
-	$('#main-modal .modal-content').load(url, function () {
+	var $modal = $('#main-modal .modal-content');
+	if (size && size.length) {
+		$modal.parent().addClass('modal-' + size);
+	} else {
+		$modal.parent().removeClass('modal-lg').removeClass('modal-sm');
+	}
+	$modal.load(url, function () {
 		hide_loading();
 		var input = $('#main-modal').modal().find('input[type=text]').get(0);
 		if (input) {
@@ -140,8 +177,9 @@ function show_modal (url, callback_function) {
 	});
 }
 
-function hide_modal() {
-	$('#main-modal').modal('hide');
+function hide_modal(id) {
+	id = id || 'main-modal';
+	$('#' + id).modal('hide');
 }
 
 function validate (form, url, callback_error, callback_ok) {
@@ -213,6 +251,25 @@ function validate_data (form, url, id, callback_error, callback_ok) {
 	return false;
 }
 
+function validate_login (form, url) {
+	show_loading('Ingresando al sistema');
+	$(form.submit).prop({disabled : true});
+	$.post(url, $(form).serialize(), function (response) {
+		hide_loading();
+		if (response == 'OK') {
+			$alert_modal.modal('hide');
+		} else {
+			$alert_modal.html(response);
+			if ($alert_modal.find('.input-error').length) {
+				$alert_modal.find('input').on('keypress', function () {
+					$(this).parent().next().fadeOut();
+				});
+			}
+		}
+	});
+	return false;
+}
+
 function refresh (time) {
 	setTimeout(function () {
 		window.location = '';
@@ -259,8 +316,10 @@ function message (title, text, icon, class_name, sticky) {
 }
 
 function show_loading (text) {
-	$('#loading-ajax').fadeIn(200);
-	$('#loading-ajax > label').html(text || lang.loading + '...')
+	var $loading_ajax = $('#loading-ajax');
+	$loading_ajax.find('label').html(text || lang.loading + '...');
+	$loading_ajax.css({ marginLeft : '-' + $loading_ajax.outerWidth()/2 + 'px' });
+	$loading_ajax.fadeIn(200);
 }
 
 function hide_loading () {
@@ -271,14 +330,21 @@ function button_on_off (input, url) {
 	$.post(url, {state: $(input).children('input').val()});
 }
 
-function setCities (value, selected) {
+function get_cities (id_country, selected, filter, id) {
 	show_loading(lang.loading_city);
-	$.get(_base_url + 'admin/profile/cities/' + value, function (response) {
-		var obj = $('#cities');
+	$.get(base_url + 'parameter/city/json_list/' + id_country, filter || {}, function (response) {
+		var obj = $('#' + (id || 'cities'));
 		obj.empty();
-		obj.append(new Option(lang.selected_city + '...', '0'));
+		obj.append(new Option(lang.select + '...', '0'));
 		for (var i = 0; i < response.length; i++) {
-			obj.append(new Option(response[i].text, response[i].value));
+			var option = new Option(response[i].text, response[i].value);
+			if (response[i].value == 'new') {
+				option.className = 'new-option';
+				option.onclick = function () {
+					
+				};
+			};
+			obj.append(option);
 		};
 		if (selected)
 			obj.val(selected);
@@ -300,6 +366,7 @@ function event_edit ($this, callback_edit) {
 	var $next = $this.parent().parent().next();
 	$next.find('.form-control').show();
 	$next.find('.input-group').css('display', 'table');
+	$next.find('div.none').show();
 	$next.find('label.none').show();
 	$next.find('strong.none').show();
 	$next.find('.form-control-static').hide();
@@ -315,6 +382,7 @@ function event_cancel ($this, callback_cancel) {
 	var $next = $this.parent().parent().parent().next();
 	$next.find('.form-control').hide();
 	$next.find('.input-group').hide();
+	$next.find('div.none').hide();
 	$next.find('label.none').hide();
 	$next.find('strong.none').hide();
 	$next.find('.form-control-static').show();
@@ -349,77 +417,6 @@ function setEditor (elements) {
 	});
 }
 
-function setSimpleEditor (elements) {
-	var $elements = $(elements);
-	$elements.summernote({
-		height: 100,
-		toolbar: [
-		    ['style', ['bold', 'italic', 'underline']],
-		    ['para', ['ul', 'ol']],
-		    ['insert', ['link']]
-	    ],
-	    onfocus: function(e) {
-			var $html = $($.parseHTML($elements.code()));
-			if ($html.hasClass('placeholder') || $html.find('.placeholder').length) {
-				$elements.code('');
-			}
-		},
-		onblur: function(e) {
-			var html = $elements.code();
-			if (html == '' || html == '<br>' || html == '<p><br></p>') {
-				$elements.code('<span class="placeholder">' + lang.write_contents + '</span>');
-			}
-		},
-		onkeyup: function(e) {
-			var html = $elements.code();
-			if (html == '' || html == '<br>' || html == '<p><br></p>') {
-				$elements.code('<span class="placeholder">' + lang.write_contents + '</span>');
-			}
-		},
-		onkeydown: function(e) {
-			var $html = $($.parseHTML($elements.code()));
-			if ($html.hasClass('placeholder') || $html.find('.placeholder').length) {
-				$elements.code('');
-			}
-		}
-	});
-}
-
-function textSelect(inp, s, e) {
-    e = e || s;
-    if (inp.createTextRange) {
-        var r = inp.createTextRange();
-        r.collapse(true);
-        r.moveEnd('character', e);
-        r.moveStart('character', s);
-        r.select();
-    }else if(inp.setSelectionRange) {
-        inp.focus();
-        inp.setSelectionRange(s, e);
-    }
-}
-
-function setEndOfContenteditable(contentEditableElement)
-{
-    var range,selection;
-    if(document.createRange)//Firefox, Chrome, Opera, Safari, IE 9+
-    {
-        range = document.createRange();//Create a range (a range is a like the selection but invisible)
-        range.selectNodeContents(contentEditableElement);//Select the entire contents of the element with the range
-        range.collapse(true);//collapse the range to the end point. false means collapse to end rather than the start
-        selection = window.getSelection();//get the selection object (allows you to change selection)
-        selection.removeAllRanges();//remove any selections already made
-        selection.addRange(range);//make the range you have just created the visible selection
-    }
-    else if(document.selection)//IE 8 and lower
-    { 
-        range = document.body.createTextRange();//Create a range (a range is a like the selection but invisible)
-        range.moveToElementText(contentEditableElement);//Select the entire contents of the element with the range
-        range.collapse(true);//collapse the range to the end point. false means collapse to end rather than the start
-        range.select();//Select the range (make it the visible selection
-    }
-}
-
 /* Nano Templates (Tomasz Mazur, Jacek Becela) */
 function nano(template, data) {
   return template.replace(/\{([\w\.]*)\}/g, function(str, key) {
@@ -430,24 +427,23 @@ function nano(template, data) {
 }
 
 var normalize = (function() {
-  var from = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç",
-      to   = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc",
-      mapping = {};
- 
-  for(var i = 0, j = from.length; i < j; i++ )
-      mapping[ from.charAt( i ) ] = to.charAt( i );
- 
-  return function( str ) {
-      var ret = [];
-      for( var i = 0, j = str.length; i < j; i++ ) {
-          var c = str.charAt( i );
-          if( mapping.hasOwnProperty( str.charAt( i ) ) )
-              ret.push( mapping[ c ] );
-          else
-              ret.push( c );
-      }
+	var from = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç",
+	to   = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc",
+	mapping = {};
+
+	for(var i = 0, j = from.length; i < j; i++ )
+		mapping[ from.charAt( i ) ] = to.charAt( i );
+
+	return function( str ) {
+		var ret = [];
+		for( var i = 0, j = str.length; i < j; i++ ) {
+			var c = str.charAt( i );
+			if( mapping.hasOwnProperty( str.charAt( i ) ) )
+				ret.push( mapping[ c ] );
+			else
+				ret.push( c );
+		}
       // return ret.join( '' );
       return ret.join( '' ).replace( /[^-A-Za-z0-9]+/g, '-' ).toLowerCase();
-  }
- 
+  }  
 })();

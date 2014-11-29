@@ -10,7 +10,7 @@
 			<span class="input-group-addon glyphicon glyphicon-calendar"></span>
 		</div>
 	</div>
-	<div> 
+	<div class="hide"> 
 		<label for=""><?php echo lang('page') ?></label> 
 		<select name="id_page" class="form-control">
 			<option value="0"><?php echo lang('all') ?></option>
@@ -157,7 +157,7 @@
 			form = $(form).serialize();
 		}
 		show_loading(id_page ? '<?php echo lang('loading_articles') ?>' : '<?php echo lang('search_articles') ?>');
-		$.post(_base_url + 'cms/article/list_articles/' + id_page || '', form, function(data) {
+		$.post(base_url + 'cms/article/list_articles/' + id_page || '', form, function(data) {
 			hide_loading();
 			$('#articles-container').html(data);
 			if (id_page == null) {

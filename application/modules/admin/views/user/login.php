@@ -62,7 +62,7 @@
 			event.preventDefault();
 			var form = this;
 			show_loading('Enviando mail');
-			$.post(_base_url + 'ajax/reset_password', $(form).serialize(), function (response) {
+			$.post(base_url + 'ajax/reset_password', $(form).serialize(), function (response) {
 				hide_loading();
 				$(form).find('.input-error').remove();
 				if (response.state == 'OK') {
